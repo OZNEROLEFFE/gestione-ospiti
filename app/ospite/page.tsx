@@ -554,8 +554,8 @@ function FormOspite({ slot, numero, totale, pren, token, onSalvato, onAnnulla, t
             </select>
           </Field>
           <Field label={t.dataNascita + ' *'}>
-            <input type="date" value={form.dataNascita} onChange={e => up('dataNascita', e.target.value)} style={inputStyle} />
-          </Field>
+  <DataNascitaSelect value={form.dataNascita} onChange={v => up('dataNascita', v)} />
+</Field>
         </div>
         <Field label={t.cittadinanza + ' *'}>
           <SelectStato value={form.cittadinanzaTesto} onChange={v => up('cittadinanzaTesto', v)} placeholder={t.selezionaStato} />
@@ -734,7 +734,44 @@ export default function OspitePage() {
   )
 
   if (slotAttivo) {
-    const numero = pren.ospiti.findIndex(o => o.slotId === slotAttivo.slotId) + 1
+    const numero = pren.ospiti.findIndex(o => o.slotId === slotAttivo.slotId) + 1 function DataNascitaSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const parts = value ? value.split('-') : ['', '', '']
+  const anno = parts[0] || ''
+  const mese = parts[1] || ''
+  const giorno = parts[2] || ''
+
+  const update = (a: string, m: string, g: string) => {
+    if (a && m && g) onChange(`${a}-${m}-${g}`)
+    else onChange('')
+  }
+
+  const giorni = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'))
+  const mesi = [
+    { v: '01', l: 'Gennaio' }, { v: '02', l: 'Febbraio' }, { v: '03', l: 'Marzo' },
+    { v: '04', l: 'Aprile' }, { v: '05', l: 'Maggio' }, { v: '06', l: 'Giugno' },
+    { v: '07', l: 'Luglio' }, { v: '08', l: 'Agosto' }, { v: '09', l: 'Settembre' },
+    { v: '10', l: 'Ottobre' }, { v: '11', l: 'Novembre' }, { v: '12', l: 'Dicembre' },
+  ]
+  const annoCorrente = new Date().getFullYear()
+  const anni = Array.from({ length: 110 }, (_, i) => String(annoCorrente - i))
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr', gap: 6 }}>
+      <select value={giorno} onChange={e => update(anno, mese, e.target.value)} style={inputStyle}>
+        <option value="">GG</option>
+        {giorni.map(g => <option key={g} value={g}>{g}</option>)}
+      </select>
+      <select value={mese} onChange={e => update(anno, e.target.value, giorno)} style={inputStyle}>
+        <option value="">Mese</option>
+        {mesi.map(m => <option key={m.v} value={m.v}>{m.l}</option>)}
+      </select>
+      <select value={anno} onChange={e => update(e.target.value, mese, giorno)} style={inputStyle}>
+        <option value="">Anno</option>
+        {anni.map(a => <option key={a} value={a}>{a}</option>)}
+      </select>
+    </div>
+  )
+}
     return <FormOspite slot={slotAttivo} numero={numero} totale={pren.ospiti.length} pren={pren} token={token!} onSalvato={ricarica} onAnnulla={() => setSlotAttivo(null)} t={t} />
   }
 
