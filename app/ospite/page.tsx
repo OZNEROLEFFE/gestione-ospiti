@@ -372,11 +372,6 @@ function DataNascitaSelect({ value, onChange }: { value: string; onChange: (v: s
   const [mese, setMese] = useState(parts[1] || '')
   const [giorno, setGiorno] = useState(parts[2] || '')
 
-  const update = (a: string, m: string, g: string) => {
-    if (a && m && g) onChange(`${a}-${m}-${g}`)
-    else onChange('')
-  }
-
   const giorni = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'))
   const mesi = [
     { v: '01', l: 'Gennaio' }, { v: '02', l: 'Febbraio' }, { v: '03', l: 'Marzo' },
@@ -387,18 +382,22 @@ function DataNascitaSelect({ value, onChange }: { value: string; onChange: (v: s
   const annoCorrente = new Date().getFullYear()
   const anni = Array.from({ length: 110 }, (_, i) => String(annoCorrente - i))
 
+  const handleGiorno = (g: string) => { setGiorno(g); if (anno && mese && g) onChange(`${anno}-${mese}-${g}`) }
+  const handleMese = (m: string) => { setMese(m); if (anno && m && giorno) onChange(`${anno}-${m}-${giorno}`) }
+  const handleAnno = (a: string) => { setAnno(a); if (a && mese && giorno) onChange(`${a}-${mese}-${giorno}`) }
+
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr', gap: 6 }}>
-      <select value={giorno} onChange={e => { setGiorno(e.target.value); update(anno, mese, e.target.value) }} style={inputStyle}>
-        <option value="">GG</option>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <select value={giorno} onChange={e => handleGiorno(e.target.value)} style={{ ...inputStyle, fontSize: 16 }}>
+        <option value="">-- Giorno --</option>
         {giorni.map(g => <option key={g} value={g}>{g}</option>)}
       </select>
-      <select value={mese} onChange={e => update(anno, e.target.value, giorno)} style={inputStyle}>
-        <option value="">Mese</option>
+      <select value={mese} onChange={e => handleMese(e.target.value)} style={{ ...inputStyle, fontSize: 16 }}>
+        <option value="">-- Mese --</option>
         {mesi.map(m => <option key={m.v} value={m.v}>{m.l}</option>)}
       </select>
-      <select value={anno} onChange={e => update(e.target.value, mese, giorno)} style={inputStyle}>
-        <option value="">Anno</option>
+      <select value={anno} onChange={e => handleAnno(e.target.value)} style={{ ...inputStyle, fontSize: 16 }}>
+        <option value="">-- Anno --</option>
         {anni.map(a => <option key={a} value={a}>{a}</option>)}
       </select>
     </div>
