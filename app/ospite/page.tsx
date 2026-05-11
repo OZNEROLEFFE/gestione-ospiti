@@ -368,9 +368,9 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function DataNascitaSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const parts = value ? value.split('-') : ['', '', '']
-  const anno = parts[0] || ''
-  const mese = parts[1] || ''
-  const giorno = parts[2] || ''
+  const [anno, setAnno] = useState(parts[0] || '')
+  const [mese, setMese] = useState(parts[1] || '')
+  const [giorno, setGiorno] = useState(parts[2] || '')
 
   const update = (a: string, m: string, g: string) => {
     if (a && m && g) onChange(`${a}-${m}-${g}`)
@@ -389,7 +389,7 @@ function DataNascitaSelect({ value, onChange }: { value: string; onChange: (v: s
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr', gap: 6 }}>
-      <select value={giorno} onChange={e => update(anno, mese, e.target.value)} style={inputStyle}>
+      <select value={giorno} onChange={e => { setGiorno(e.target.value); update(anno, mese, e.target.value) }} style={inputStyle}>
         <option value="">GG</option>
         {giorni.map(g => <option key={g} value={g}>{g}</option>)}
       </select>
