@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { STATI } from '@/lib/stati-data'
 
-// ── Traduzioni ────────────────────────────────────────────
 const T = {
   it: {
     checkinOnline: 'Check-in online', arrivo: 'Arrivo', partenza: 'Partenza',
@@ -40,7 +39,7 @@ const T = {
     errRetro: 'Carica anche la foto del retro',
     errSelfie: 'Scatta un selfie per completare',
     linkNonValido: 'Link non valido',
-    linkNonValidoDesc: 'Prenotazione non trovata. Controlla il link o contatta l\'host.',
+    linkNonValidoDesc: "Prenotazione non trovata. Controlla il link o contatta l'host.",
     footer: 'I dati inseriti sono trattati per gli adempimenti di legge (art. 109 TULPS) e per la comunicazione obbligatoria al portale Alloggiati Web della Polizia di Stato.',
     ospiteN: (n: number, t: number) => `Ospite ${n} di ${t}`,
   },
@@ -88,7 +87,7 @@ const T = {
     ciao: 'Hallo 👋',
     benvenuto: (nome: string, n: number) => `Die Buchung auf den Namen ${nome} ist bestätigt. Bitte füllen Sie die Daten aller Gäste (${n} Personen) aus.`,
     compilati: (c: number, t: number) => `${c} von ${t} Gästen ausgefüllt`,
-    tuttiCompilati: '✅ Alle Daten eingegeben! Wir freuen uns auf Sie.',
+    tuttiCompilati: '✅ Alle Daten eingegeben! Kontaktieren Sie den Gastgeber für die nächsten Schritte.',
     ospiti: 'Gäste', ospite: 'Gast', compilato: 'Ausgefüllt ✓',
     tocca: 'Tippen, um Ihre Daten einzugeben',
     listaOspiti: '← Gästeliste', annulla: 'Abbrechen', salva: 'Meine Daten speichern',
@@ -107,7 +106,7 @@ const T = {
     luogoRilascio: 'Ausstellungsort',
     fotoFronte: 'Foto Vorderseite *', fotoRetro: 'Foto Rückseite *', selfie: 'Selfie *',
     fotocamera: 'Kamera', galleria: 'Galerie',
-    solofoto: 'Laden Sie Fotos Ihres Dokuments (Vorder- und Rückseite) und ein Selfie hoch. Textdaten sind nicht erforderlich.',
+    solofoto: 'Laden Sie Fotos Ihres Dokuments (Vorder- und Rückseite) und ein Selfie hoch.',
     minorenne: (eta: number) => `👶 Minderjährig (${eta} Jahre): keine Dokumente oder Selfie erforderlich.`,
     inserisciData: '📅 Geburtsdatum eingeben, um fortzufahren.',
     errCognomeNome: 'Nachname und Vorname sind erforderlich',
@@ -127,7 +126,7 @@ const T = {
     ciao: 'Bonjour 👋',
     benvenuto: (nome: string, n: number) => `La réservation au nom de ${nome} est confirmée. Veuillez remplir les données de tous les invités (${n} personnes).`,
     compilati: (c: number, t: number) => `${c} sur ${t} invités complétés`,
-    tuttiCompilati: '✅ Toutes les données saisies ! Nous vous attendons.',
+    tuttiCompilati: '✅ Toutes les données saisies ! Contactez l\'hôte pour les prochaines étapes.',
     ospiti: 'Invités', ospite: 'Invité', compilato: 'Complété ✓',
     tocca: 'Appuyez pour saisir vos données',
     listaOspiti: '← Liste des invités', annulla: 'Annuler', salva: 'Enregistrer mes données',
@@ -146,7 +145,7 @@ const T = {
     luogoRilascio: 'Lieu de délivrance',
     fotoFronte: 'Photo recto *', fotoRetro: 'Photo verso *', selfie: 'Selfie *',
     fotocamera: 'Appareil photo', galleria: 'Galerie',
-    solofoto: 'Téléchargez les photos de votre document (recto et verso) et un selfie. Les données textuelles ne sont pas requises.',
+    solofoto: 'Téléchargez les photos de votre document (recto et verso) et un selfie.',
     minorenne: (eta: number) => `👶 Mineur (${eta} ans) : aucun document ni selfie requis.`,
     inserisciData: '📅 Entrez la date de naissance pour continuer.',
     errCognomeNome: 'Nom et prénom obligatoires',
@@ -179,7 +178,6 @@ function detectLang(): Lang {
   return T[nav] ? nav : 'it'
 }
 
-// ── Tipi ─────────────────────────────────────────────────
 interface Ospite {
   slotId: string; compilato: boolean; isCapogruppo: boolean
   cognome?: string; nome?: string
@@ -190,7 +188,6 @@ interface Prenotazione {
 }
 interface Comune { nome: string; codice: string; prov: string }
 
-// ── Helpers ───────────────────────────────────────────────
 function formatDateTime(iso: string) {
   if (!iso) return ''
   const d = new Date(iso)
@@ -230,7 +227,6 @@ function compressImage(file: File): Promise<string> {
   })
 }
 
-// ── LangSwitcher ─────────────────────────────────────────
 function LangSwitcher({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => void }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -259,7 +255,6 @@ function LangSwitcher({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => v
   )
 }
 
-// ── ComboboxComune ────────────────────────────────────────
 function ComboboxComune({ value, onChange, placeholder }: { value: string; onChange: (c: Comune | null) => void; placeholder: string }) {
   const [query, setQuery] = useState(value || '')
   const [open, setOpen] = useState(false)
@@ -313,7 +308,6 @@ function ComboboxComune({ value, onChange, placeholder }: { value: string; onCha
   )
 }
 
-// ── SelectStato ───────────────────────────────────────────
 function SelectStato({ value, onChange, placeholder }: { value: string; onChange: (v: string) => void; placeholder: string }) {
   return (
     <select value={value || ''} onChange={e => onChange(e.target.value)} style={inputStyle}>
@@ -323,7 +317,6 @@ function SelectStato({ value, onChange, placeholder }: { value: string; onChange
   )
 }
 
-// ── FotoUpload ────────────────────────────────────────────
 function FotoUpload({ label, value, onChange, selfie = false, t }: {
   label: string; value: string | null; onChange: (v: string | null) => void; selfie?: boolean; t: typeof T.it
 }) {
@@ -364,7 +357,6 @@ function FotoUpload({ label, value, onChange, selfie = false, t }: {
   )
 }
 
-// ── Field ─────────────────────────────────────────────────
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: 14 }}>
@@ -374,7 +366,45 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   )
 }
 
-// ── Lista ospiti ──────────────────────────────────────────
+function DataNascitaSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const parts = value ? value.split('-') : ['', '', '']
+  const anno = parts[0] || ''
+  const mese = parts[1] || ''
+  const giorno = parts[2] || ''
+
+  const update = (a: string, m: string, g: string) => {
+    if (a && m && g) onChange(`${a}-${m}-${g}`)
+    else onChange('')
+  }
+
+  const giorni = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'))
+  const mesi = [
+    { v: '01', l: 'Gennaio' }, { v: '02', l: 'Febbraio' }, { v: '03', l: 'Marzo' },
+    { v: '04', l: 'Aprile' }, { v: '05', l: 'Maggio' }, { v: '06', l: 'Giugno' },
+    { v: '07', l: 'Luglio' }, { v: '08', l: 'Agosto' }, { v: '09', l: 'Settembre' },
+    { v: '10', l: 'Ottobre' }, { v: '11', l: 'Novembre' }, { v: '12', l: 'Dicembre' },
+  ]
+  const annoCorrente = new Date().getFullYear()
+  const anni = Array.from({ length: 110 }, (_, i) => String(annoCorrente - i))
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr', gap: 6 }}>
+      <select value={giorno} onChange={e => update(anno, mese, e.target.value)} style={inputStyle}>
+        <option value="">GG</option>
+        {giorni.map(g => <option key={g} value={g}>{g}</option>)}
+      </select>
+      <select value={mese} onChange={e => update(anno, e.target.value, giorno)} style={inputStyle}>
+        <option value="">Mese</option>
+        {mesi.map(m => <option key={m.v} value={m.v}>{m.l}</option>)}
+      </select>
+      <select value={anno} onChange={e => update(e.target.value, mese, giorno)} style={inputStyle}>
+        <option value="">Anno</option>
+        {anni.map(a => <option key={a} value={a}>{a}</option>)}
+      </select>
+    </div>
+  )
+}
+
 function ListaOspiti({ pren, onApri, lang, setLang, t }: {
   pren: Prenotazione; onApri: (s: Ospite) => void; lang: Lang; setLang: (l: Lang) => void; t: typeof T.it
 }) {
@@ -382,7 +412,6 @@ function ListaOspiti({ pren, onApri, lang, setLang, t }: {
   const totale = pren.ospiti.length
   return (
     <div style={pageStyle}>
-      {/* Header */}
       <div style={{ background: '#1c1917', color: 'white', padding: '20px 16px 24px', borderRadius: '0 0 16px 16px', marginBottom: 16 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
           <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.12em', color: '#c89b4a', margin: 0 }}>{t.checkinOnline}</p>
@@ -401,7 +430,6 @@ function ListaOspiti({ pren, onApri, lang, setLang, t }: {
         </div>
       </div>
 
-      {/* Benvenuto */}
       <div style={cardStyle}>
         <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 22, margin: '0 0 10px', color: '#1c1917' }}>{t.ciao}</h2>
         <p style={{ color: '#44403c', margin: '0 0 14px', lineHeight: 1.6, fontSize: 14 }}>
@@ -421,7 +449,6 @@ function ListaOspiti({ pren, onApri, lang, setLang, t }: {
         </div>
       )}
 
-      {/* Lista ospiti */}
       <div style={cardStyle}>
         <h3 style={{ fontFamily: 'Georgia, serif', fontSize: 18, margin: '0 0 14px', color: '#1c1917', fontWeight: 600 }}>{t.ospiti}</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -448,12 +475,10 @@ function ListaOspiti({ pren, onApri, lang, setLang, t }: {
   )
 }
 
-// ── Form ospite ───────────────────────────────────────────
 function FormOspite({ slot, numero, totale, pren, token, onSalvato, onAnnulla, t }: {
   slot: Ospite; numero: number; totale: number; pren: Prenotazione
   token: string; onSalvato: () => void; onAnnulla: () => void; t: typeof T.it
 }) {
-  // Determina se sarà capogruppo: unico ospite, già marcato, o nessuno ha ancora compilato
   const nessunCapo = !pren.ospiti.some(o => o.isCapogruppo)
   const nessunCompilato = !pren.ospiti.some(o => o.compilato && o.slotId !== slot.slotId)
   const isCapogruppo = totale === 1 || slot.isCapogruppo || (nessunCapo && nessunCompilato)
@@ -482,10 +507,10 @@ function FormOspite({ slot, numero, totale, pren, token, onSalvato, onAnnulla, t
   const handleSalva = async () => {
     setErrore('')
     if (!form.cognome.trim() || !form.nome.trim()) { setErrore(t.errCognomeNome); return }
-if (!form.dataNascita) { setErrore(t.errData); return }
-if (isItaliano && !form.comuneNascita) { setErrore('Comune di nascita obbligatorio'); return }
-if (!isItaliano && !form.statoNascita) { setErrore('Stato di nascita obbligatorio'); return }
-if (!form.comuneResidenza) { setErrore('Comune/città di residenza obbligatorio'); return }
+    if (!form.dataNascita) { setErrore(t.errData); return }
+    if (isItaliano && !form.comuneNascita) { setErrore('Comune di nascita obbligatorio'); return }
+    if (!isItaliano && !form.statoNascita) { setErrore('Stato di nascita obbligatorio'); return }
+    if (!form.comuneResidenza) { setErrore('Comune/città di residenza obbligatorio'); return }
     if (isMaggiorenne) {
       if (isCapogruppo) {
         if (!form.tipoDocumento) { setErrore(t.errTipoDoc); return }
@@ -538,7 +563,6 @@ if (!form.comuneResidenza) { setErrore('Comune/città di residenza obbligatorio'
         </span>
       </div>
 
-      {/* Dati anagrafici */}
       <div style={cardStyle}>
         <h3 style={sectionTitle}>{t.datiAnagrafici}</h3>
         <div style={rowStyle}>
@@ -557,33 +581,32 @@ if (!form.comuneResidenza) { setErrore('Comune/città di residenza obbligatorio'
             </select>
           </Field>
           <Field label={t.dataNascita + ' *'}>
-  <DataNascitaSelect value={form.dataNascita} onChange={v => up('dataNascita', v)} />
-</Field>
+            <DataNascitaSelect value={form.dataNascita} onChange={v => up('dataNascita', v)} />
+          </Field>
         </div>
         <Field label={t.cittadinanza + ' *'}>
           <SelectStato value={form.cittadinanzaTesto} onChange={v => up('cittadinanzaTesto', v)} placeholder={t.selezionaStato} />
         </Field>
         {isItaliano ? (
-  <Field label={t.comuneNascita}>
-    <ComboboxComune value={form.comuneNascita} placeholder={t.iniziaComune}
-      onChange={c => { if (c) { up('comuneNascita', c.nome); up('provinciaNascita', c.prov); up('codiceComuneNascita', c.codice) } else { up('comuneNascita', ''); up('provinciaNascita', ''); up('codiceComuneNascita', '') } }} />
-  </Field>
-) : (
-  <>
-    <Field label={t.statoNascita}>
-      <SelectStato value={form.statoNascita} onChange={v => { up('statoNascita', v); up('comuneNascita', ''); up('provinciaNascita', ''); up('codiceComuneNascita', '') }} placeholder={t.selezionaStato} />
-    </Field>
-    {form.statoNascita === 'ITALIA' && (
-      <Field label={t.comuneNascita}>
-        <ComboboxComune value={form.comuneNascita} placeholder={t.iniziaComune}
-          onChange={c => { if (c) { up('comuneNascita', c.nome); up('provinciaNascita', c.prov); up('codiceComuneNascita', c.codice) } else { up('comuneNascita', ''); up('provinciaNascita', ''); up('codiceComuneNascita', '') } }} />
-      </Field>
-    )}
-  </>
-)}
+          <Field label={t.comuneNascita + ' *'}>
+            <ComboboxComune value={form.comuneNascita} placeholder={t.iniziaComune}
+              onChange={c => { if (c) { up('comuneNascita', c.nome); up('provinciaNascita', c.prov); up('codiceComuneNascita', c.codice) } else { up('comuneNascita', ''); up('provinciaNascita', ''); up('codiceComuneNascita', '') } }} />
+          </Field>
+        ) : (
+          <>
+            <Field label={t.statoNascita + ' *'}>
+              <SelectStato value={form.statoNascita} onChange={v => { up('statoNascita', v); up('comuneNascita', ''); up('provinciaNascita', ''); up('codiceComuneNascita', '') }} placeholder={t.selezionaStato} />
+            </Field>
+            {form.statoNascita === 'ITALIA' && (
+              <Field label={t.comuneNascita + ' *'}>
+                <ComboboxComune value={form.comuneNascita} placeholder={t.iniziaComune}
+                  onChange={c => { if (c) { up('comuneNascita', c.nome); up('provinciaNascita', c.prov); up('codiceComuneNascita', c.codice) } else { up('comuneNascita', ''); up('provinciaNascita', ''); up('codiceComuneNascita', '') } }} />
+              </Field>
+            )}
+          </>
+        )}
       </div>
 
-      {/* Residenza — senza indirizzo e CAP */}
       <div style={cardStyle}>
         <h3 style={sectionTitle}>{t.residenza}</h3>
         <Field label={t.statoResidenza}>
@@ -592,18 +615,17 @@ if (!form.comuneResidenza) { setErrore('Comune/città di residenza obbligatorio'
             placeholder={t.selezionaStato} />
         </Field>
         {residenzaItalia ? (
-          <Field label={t.comune}>
+          <Field label={t.comune + ' *'}>
             <ComboboxComune value={form.comuneResidenza} placeholder={t.iniziaComune}
               onChange={c => { if (c) { up('comuneResidenza', c.nome); up('provinciaResidenza', c.prov); up('codiceComuneResidenza', c.codice) } else { up('comuneResidenza', ''); up('provinciaResidenza', ''); up('codiceComuneResidenza', '') } }} />
           </Field>
         ) : (
-          <Field label={t.citta}>
+          <Field label={t.citta + ' *'}>
             <input value={form.comuneResidenza} onChange={e => up('comuneResidenza', e.target.value)} style={inputStyle} />
           </Field>
         )}
       </div>
 
-      {/* Documento */}
       {eta === null && (
         <div style={{ ...cardStyle, background: '#dde7f0', border: '1px solid #3a5a78' }}>
           <p style={{ margin: 0, color: '#1e3a52', fontSize: 14, fontWeight: 500 }}>{t.inserisciData}</p>
@@ -620,8 +642,6 @@ if (!form.comuneResidenza) { setErrore('Comune/città di residenza obbligatorio'
           <div style={{ background: '#fce8d8', border: '1px solid #b85b1c', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#7a3a10', fontWeight: 500 }}>
             ℹ️ {t.docAccettati}
           </div>
-
-          {/* Capogruppo: compila dati + foto */}
           {isCapogruppo && (
             <>
               <div style={rowStyle}>
@@ -654,14 +674,11 @@ if (!form.comuneResidenza) { setErrore('Comune/città di residenza obbligatorio'
               )}
             </>
           )}
-
-          {/* Secondario: solo info + foto */}
           {!isCapogruppo && (
             <div style={{ background: '#f4efe6', borderRadius: 8, padding: '10px 14px', marginBottom: 14, fontSize: 13, color: '#44403c' }}>
               📷 {t.solofoto}
             </div>
           )}
-
           <FotoUpload label={t.fotoFronte} value={form.docFronte} onChange={v => up('docFronte', v)} t={t} />
           {!isPassaporto && <FotoUpload label={t.fotoRetro} value={form.docRetro} onChange={v => up('docRetro', v)} t={t} />}
           <FotoUpload label={t.selfie} value={form.selfie} onChange={v => up('selfie', v)} selfie t={t} />
@@ -684,7 +701,6 @@ if (!form.comuneResidenza) { setErrore('Comune/città di residenza obbligatorio'
   )
 }
 
-// ── Pagina principale ─────────────────────────────────────
 export default function OspitePage() {
   const [token, setToken] = useState<string | null>(null)
   const [pren, setPren] = useState<Prenotazione | null>(null)
@@ -738,52 +754,12 @@ export default function OspitePage() {
 
   if (slotAttivo) {
     const numero = pren.ospiti.findIndex(o => o.slotId === slotAttivo.slotId) + 1
-
-function DataNascitaSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const parts = value ? value.split('-') : ['', '', '']
-  const anno = parts[0] || ''
-  const mese = parts[1] || ''
-  const giorno = parts[2] || ''
-
-  const update = (a: string, m: string, g: string) => {
-    if (a && m && g) onChange(`${a}-${m}-${g}`)
-    else onChange('')
-  }
-
-  const giorni = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0'))
-  const mesi = [
-    { v: '01', l: 'Gennaio' }, { v: '02', l: 'Febbraio' }, { v: '03', l: 'Marzo' },
-    { v: '04', l: 'Aprile' }, { v: '05', l: 'Maggio' }, { v: '06', l: 'Giugno' },
-    { v: '07', l: 'Luglio' }, { v: '08', l: 'Agosto' }, { v: '09', l: 'Settembre' },
-    { v: '10', l: 'Ottobre' }, { v: '11', l: 'Novembre' }, { v: '12', l: 'Dicembre' },
-  ]
-  const annoCorrente = new Date().getFullYear()
-  const anni = Array.from({ length: 110 }, (_, i) => String(annoCorrente - i))
-
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr 2fr', gap: 6 }}>
-      <select value={giorno} onChange={e => update(anno, mese, e.target.value)} style={inputStyle}>
-        <option value="">GG</option>
-        {giorni.map(g => <option key={g} value={g}>{g}</option>)}
-      </select>
-      <select value={mese} onChange={e => update(anno, e.target.value, giorno)} style={inputStyle}>
-        <option value="">Mese</option>
-        {mesi.map(m => <option key={m.v} value={m.v}>{m.l}</option>)}
-      </select>
-      <select value={anno} onChange={e => update(e.target.value, mese, giorno)} style={inputStyle}>
-        <option value="">Anno</option>
-        {anni.map(a => <option key={a} value={a}>{a}</option>)}
-      </select>
-    </div>
-  )
-}
     return <FormOspite slot={slotAttivo} numero={numero} totale={pren.ospiti.length} pren={pren} token={token!} onSalvato={ricarica} onAnnulla={() => setSlotAttivo(null)} t={t} />
   }
 
   return <ListaOspiti pren={pren} onApri={setSlotAttivo} lang={lang} setLang={changeLang} t={t} />
 }
 
-// ── Stili ─────────────────────────────────────────────────
 const pageStyle: React.CSSProperties = { maxWidth: 560, margin: '0 auto', padding: '20px 16px', background: '#faf7f2', minHeight: '100vh', fontFamily: 'system-ui, sans-serif' }
 const cardStyle: React.CSSProperties = { background: 'white', border: '1px solid #e7e2d8', borderRadius: 12, padding: '18px 16px', marginBottom: 14 }
 const inputStyle: React.CSSProperties = { width: '100%', padding: '10px 12px', border: '1px solid #e7e2d8', borderRadius: 8, fontSize: 14, fontFamily: 'inherit', background: '#faf7f2', color: '#1c1917', boxSizing: 'border-box' }
