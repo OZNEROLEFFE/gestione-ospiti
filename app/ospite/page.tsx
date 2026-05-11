@@ -738,7 +738,6 @@ export default function OspitePage() {
 
   if (slotAttivo) {
     const numero = pren.ospiti.findIndex(o => o.slotId === slotAttivo.slotId) + 1
-}
 
 function DataNascitaSelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   const parts = value ? value.split('-') : ['', '', '']
