@@ -507,8 +507,8 @@ function FormOspite({ slot, numero, totale, pren, token, onSalvato, onAnnulla, t
     setErrore('')
     if (!form.cognome.trim() || !form.nome.trim()) { setErrore(t.errCognomeNome); return }
     if (!form.dataNascita) { setErrore(t.errData); return }
-    if (isItaliano && !form.comuneNascita) { setErrore('Comune di nascita obbligatorio'); return }
-    if (!isItaliano && !form.statoNascita) { setErrore('Stato di nascita obbligatorio'); return }
+    if (!form.statoNascita) { setErrore('Stato di nascita obbligatorio'); return }
+    if (!form.comuneNascita.trim()) { setErrore('Luogo di nascita obbligatorio'); return }
     if (!form.comuneResidenza) { setErrore('Comune/città di residenza obbligatorio'); return }
     if (isMaggiorenne) {
       if (isCapogruppo) {
@@ -586,23 +586,18 @@ function FormOspite({ slot, numero, totale, pren, token, onSalvato, onAnnulla, t
         <Field label={t.cittadinanza + ' *'}>
           <SelectStato value={form.cittadinanzaTesto} onChange={v => up('cittadinanzaTesto', v)} placeholder={t.selezionaStato} />
         </Field>
-        {isItaliano ? (
-          <Field label={t.comuneNascita + ' *'}>
+        <Field label={t.statoNascita + ' *'}>
+          <SelectStato value={form.statoNascita} onChange={v => { up('statoNascita', v); up('comuneNascita', ''); up('provinciaNascita', ''); up('codiceComuneNascita', '') }} placeholder={t.selezionaStato} />
+        </Field>
+        {form.statoNascita === 'ITALIA' ? (
+          <Field label="Luogo di nascita *">
             <ComboboxComune value={form.comuneNascita} placeholder={t.iniziaComune}
               onChange={c => { if (c) { up('comuneNascita', c.nome); up('provinciaNascita', c.prov); up('codiceComuneNascita', c.codice) } else { up('comuneNascita', ''); up('provinciaNascita', ''); up('codiceComuneNascita', '') } }} />
           </Field>
         ) : (
-          <>
-            <Field label={t.statoNascita + ' *'}>
-              <SelectStato value={form.statoNascita} onChange={v => { up('statoNascita', v); up('comuneNascita', ''); up('provinciaNascita', ''); up('codiceComuneNascita', '') }} placeholder={t.selezionaStato} />
-            </Field>
-            {form.statoNascita === 'ITALIA' && (
-              <Field label={t.comuneNascita + ' *'}>
-                <ComboboxComune value={form.comuneNascita} placeholder={t.iniziaComune}
-                  onChange={c => { if (c) { up('comuneNascita', c.nome); up('provinciaNascita', c.prov); up('codiceComuneNascita', c.codice) } else { up('comuneNascita', ''); up('provinciaNascita', ''); up('codiceComuneNascita', '') } }} />
-              </Field>
-            )}
-          </>
+          <Field label="Luogo di nascita *">
+            <input value={form.comuneNascita} onChange={e => up('comuneNascita', e.target.value)} style={inputStyle} placeholder="Es. PARIS, BERLIN..." />
+          </Field>
         )}
       </div>
 
