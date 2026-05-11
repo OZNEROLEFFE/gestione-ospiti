@@ -10,7 +10,7 @@ const T = {
     ciao: 'Ciao 👋',
     benvenuto: (nome: string, n: number) => `La prenotazione a nome di ${nome} è confermata. Per il check-in serve compilare i dati di tutti gli ospiti (${n} persone) come richiesto dalla legge italiana.`,
     compilati: (c: number, t: number) => `${c} di ${t} ospiti compilati`,
-    tuttiCompilati: '✅ Tutti i dati sono stati inseriti! Ti aspettiamo per il check-in.',
+    tuttiCompilati: '✅ Tutti i dati sono stati inseriti! Contatta il tuo Host per ricevere i prossimi step.',
     ospiti: 'Ospiti', ospite: 'Ospite', compilato: 'Compilato ✓',
     tocca: 'Tocca per compilare i tuoi dati',
     listaOspiti: '← Lista ospiti', annulla: 'Annulla', salva: 'Salva i miei dati',
@@ -49,7 +49,7 @@ const T = {
     ciao: 'Hello 👋',
     benvenuto: (nome: string, n: number) => `The booking under ${nome}'s name is confirmed. To check in, please fill in the details of all guests (${n} people) as required by Italian law.`,
     compilati: (c: number, t: number) => `${c} of ${t} guests completed`,
-    tuttiCompilati: '✅ All details submitted! We look forward to welcoming you.',
+    tuttiCompilati: '✅ All details submitted! Contact the Host for the next steps.',
     ospiti: 'Guests', ospite: 'Guest', compilato: 'Completed ✓',
     tocca: 'Tap to fill in your details',
     listaOspiti: '← Guest list', annulla: 'Cancel', salva: 'Save my details',
@@ -482,7 +482,10 @@ function FormOspite({ slot, numero, totale, pren, token, onSalvato, onAnnulla, t
   const handleSalva = async () => {
     setErrore('')
     if (!form.cognome.trim() || !form.nome.trim()) { setErrore(t.errCognomeNome); return }
-    if (!form.dataNascita) { setErrore(t.errData); return }
+if (!form.dataNascita) { setErrore(t.errData); return }
+if (isItaliano && !form.comuneNascita) { setErrore('Comune di nascita obbligatorio'); return }
+if (!isItaliano && !form.statoNascita) { setErrore('Stato di nascita obbligatorio'); return }
+if (!form.comuneResidenza) { setErrore('Comune/città di residenza obbligatorio'); return }
     if (isMaggiorenne) {
       if (isCapogruppo) {
         if (!form.tipoDocumento) { setErrore(t.errTipoDoc); return }
