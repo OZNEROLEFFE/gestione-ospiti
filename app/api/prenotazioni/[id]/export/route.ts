@@ -24,8 +24,7 @@ export async function GET(
     if (!pren) {
       return NextResponse.json({ error: 'Prenotazione non trovata' }, { status: 404 })
     }
-console.log('appartamentoObj:', JSON.stringify(pren.appartamentoObj))
-console.log('appartamento testo:', pren.appartamento)
+
 
 
     const ospitiCompleti = pren.ospiti.filter((o) => o.compilato)
@@ -54,9 +53,16 @@ console.log('appartamento testo:', pren.appartamento)
     }
 
     if (tipo === 'ross1000') {
-      const contenuto = generaFileRoss1000(pren, ospitiCompleti, pren.appartamentoObj)
+      // Cerca appartamento per nome se la relazione non è collegata
+      let appartamento = pren.appartamentoObj
+      if (!appartamento && pren.appartamento) {
+        appartamento = await prisma.appartamento.findFirst({
+          where: { nome: pren.appartamento }
+        })
+      }
 
-      // Aggiorna timestamp export
+      const contenuto = generaFileRoss1000(pren, ospitiCompleti, appartamento)
+
       await prisma.prenotazione.update({
         where: { id },
         data: { ross1000Esportato: new Date().toISOString() },
