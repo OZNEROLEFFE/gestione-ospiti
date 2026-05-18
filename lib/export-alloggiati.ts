@@ -269,7 +269,12 @@ export function generaFileAlloggiati(
   const totale = ospitiCompleti.length
   const isFamiglia = pren.tipoGruppo === 'famiglia'
 
-  const righe = ospitiCompleti.map((o) => {
+  const ospitiOrdinati = [...ospitiCompleti].sort((a, b) => {
+    if (a.isCapogruppo && !b.isCapogruppo) return -1
+    if (!a.isCapogruppo && b.isCapogruppo) return 1
+    return 0
+  })
+  const righe = ospitiOrdinati.map((o) => {
     let tipoAll: string
     if (totale === 1) tipoAll = '16'
     else if (o.isCapogruppo) tipoAll = isFamiglia ? '17' : '18'
