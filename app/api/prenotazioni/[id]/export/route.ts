@@ -26,7 +26,7 @@ export async function GET(
     }
 console.log('appartamentoObj:', JSON.stringify(pren.appartamentoObj))
 console.log('appartamento testo:', pren.appartamento)
-const ospitiCompleti = pren.ospiti.filter((o) => o.compilato)
+
 
     const ospitiCompleti = pren.ospiti.filter((o) => o.compilato)
     if (ospitiCompleti.length === 0) {
