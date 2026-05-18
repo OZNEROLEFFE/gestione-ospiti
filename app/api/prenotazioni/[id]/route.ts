@@ -31,6 +31,14 @@ export async function PATCH(
     if (dati.checkOut) dati.checkOut = new Date(dati.checkOut)
     if (dati.numeroOspiti) dati.numeroOspiti = parseInt(dati.numeroOspiti)
 
+    // Collega appartamentoId dal nome appartamento
+    if (dati.appartamento) {
+      const app = await prisma.appartamento.findFirst({
+        where: { nome: dati.appartamento }
+      })
+      if (app) dati.appartamentoId = app.id
+    }
+
     // Se viene modificato il numero ospiti, aggiungi o rimuovi slot
     if (dati.numeroOspiti) {
       const prenotazioneAttuale = await prisma.prenotazione.findUnique({
