@@ -61,8 +61,8 @@ export async function GET(
 
       return new NextResponse(contenuto, {
         headers: {
-          'Content-Type': 'text/csv; charset=utf-8',
-          'Content-Disposition': `attachment; filename="ross1000_${dataCheckIn}_${nomeRef}.csv"`,
+          'Content-Type': 'application/xml; charset=utf-8',
+          'Content-Disposition': `attachment; filename="ross1000_${dataCheckIn}_${nomeRef}.xml"`,
         },
       })
     }

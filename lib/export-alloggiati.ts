@@ -337,43 +337,85 @@ export function generaFileRoss1000(
   ospitiCompleti: OspiteExport[],
   appartamento: AppartamentoExport
 ): string {
-  const sep = ';'
-  const cin = appartamento?.cin || ''
-  const cir = appartamento?.cir || ''
-
-  const header = [
-    'CIR', 'CIN', 'NomeReferente', 'CheckIn', 'CheckOut', 'Notti',
-    'TipoOspite', 'Cognome', 'Nome', 'Sesso', 'DataNascita',
-    'ComuneNascita', 'ProvinciaNascita', 'CodiceComuneNascita', 'StatoNascita', 'Cittadinanza',
-    'ComuneResidenza', 'ProvinciaResidenza', 'CodiceComuneResidenza', 'StatoResidenza',
-    'IndirizzoResidenza', 'CAPResidenza',
-    'TipoDocumento', 'NumeroDocumento', 'LuogoRilascio', 'StatoRilascio', 'CodiceLuogoRilascio',
-  ].join(sep)
-
-  const totale = ospitiCompleti.length
+  const codiceStruttura = appartamento?.codiceStruttura || ''
   const isFamiglia = pren.tipoGruppo === 'famiglia'
+  const totale = ospitiCompleti.length
 
-  const righe = ospitiCompleti.map((o) => {
-    let tipo: string
-    if (totale === 1) tipo = 'Singolo'
-    else if (o.isCapogruppo) tipo = isFamiglia ? 'Capofamiglia' : 'Capogruppo'
-    else tipo = isFamiglia ? 'Familiare' : 'Membro'
-
-    const row = [
-      cir, cin, pren.nomeOspite,
-      pren.checkIn, pren.checkOut, calcolaNotti(pren.checkIn, pren.checkOut),
-      tipo,
-      o.cognome || '', o.nome || '', o.sesso || '',
-      o.dataNascita ? new Date(o.dataNascita).toISOString().split('T')[0] : '',
-      o.codiceComuneNascita || '', o.provinciaNascita || '', o.codiceComuneNascita || '',
-      o.statoNascita || '', o.cittadinanzaTesto || '',
-      o.comuneResidenza || '', o.provinciaResidenza || '', o.codiceComuneResidenza || '',
-      o.statoResidenza || '', o.indirizzoResidenza || '', o.capResidenza || '',
-      tipoDocLabel(o.tipoDocumento), o.numeroDocumento || '',
-      o.luogoRilascio || '', o.statoRilascio || '', o.codiceComuneRilascio || '',
-    ]
-    return row.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(sep)
+  // Ordina: capogruppo prima
+  const ospitiOrdinati = [...ospitiCompleti].sort((a, b) => {
+    if (a.isCapogruppo && !b.isCapogruppo) return -1
+    if (!a.isCapogruppo && b.isCapogruppo) return 1
+    return 0
   })
 
-  return header + '\n' + righe.join('\n')
+  // Genera ID univoci per ogni ospite
+  const ids = ospitiOrdinati.map(() => Math.random().toString(16).slice(2, 18))
+  const idCapo = ids[0]
+
+  const formatData = (d: Date | string | null | undefined): string => {
+    if (!d) return ''
+    const dt = new Date(d)
+    if (isNaN(dt.getTime())) return ''
+    return `${dt.getFullYear()}${String(dt.getMonth() + 1).padStart(2, '0')}${String(dt.getDate()).padStart(2, '0')}`
+  }
+
+  const dataCheckIn = formatData(pren.checkIn)
+
+  const getTipoAlloggiato = (o: OspiteExport, idx: number): string => {
+    if (totale === 1) return '16'
+    if (idx === 0) return isFamiglia ? '17' : '18'
+    return isFamiglia ? '19' : '20'
+  }
+
+  const arriviXml = ospitiOrdinati.map((o, i) => {
+    const tipo = getTipoAlloggiato(o, i)
+    const isItaliano = (o.cittadinanzaTesto || '').toUpperCase().trim() === 'ITALIA'
+    const codCittadinanza = getCodiceStato(o.cittadinanzaTesto)
+    const codStatoNascita = isItaliano ? '100000100' : getCodiceStato(o.statoNascita) || codCittadinanza
+    const codStatoResidenza = getCodiceStato(o.statoResidenza || 'ITALIA')
+    const comuneNascita = isItaliano ? (o.codiceComuneNascita || '') : ''
+    const comuneResidenza = o.codiceComuneResidenza || ''
+
+    return `        <arrivo>
+            <idswh>${ids[i]}</idswh>
+            <tipoalloggiato>${tipo}</tipoalloggiato>
+            <idcapo>${i === 0 ? '' : idCapo}</idcapo>
+            <cognome>${o.cognome || ''}</cognome>
+            <nome>${o.nome || ''}</nome>
+            <sesso>${o.sesso === 'F' ? 'F' : 'M'}</sesso>
+            <cittadinanza>${codCittadinanza}</cittadinanza>
+            <statoresidenza>${codStatoResidenza}</statoresidenza>
+            <luogoresidenza>${comuneResidenza}</luogoresidenza>
+            <datanascita>${formatData(o.dataNascita)}</datanascita>
+            <statonascita>${codStatoNascita}</statonascita>
+            <comunenascita>${comuneNascita}</comunenascita>
+            <tipoturismo>Non Specificato</tipoturismo>
+            <mezzotrasporto>Non Specificato</mezzotrasporto>
+            <canaleprenotazione>Non Specificato</canaleprenotazione>
+            <titolostudio>Non Specificato</titolostudio>
+            <professione></professione>
+            <esenzioneimposta></esenzioneimposta>
+        </arrivo>`
+  }).join('\n')
+
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<movimenti>
+    <codice>${codiceStruttura}</codice>
+    <prodotto>GESTIONE-OSPITI</prodotto>
+    <movimento>
+        <data>${dataCheckIn}</data>
+        <struttura>
+            <apertura>SI</apertura>
+            <camereoccupate>1</camereoccupate>
+            <cameredisponibili>1</cameredisponibili>
+            <lettidisponibili>${totale}</lettidisponibili>
+        </struttura>
+        <arrivi>
+${arriviXml}
+        </arrivi>
+        <partenze/>
+        <prenotazioni/>
+        <rettifiche/>
+    </movimento>
+</movimenti>`
 }
